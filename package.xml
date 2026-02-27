@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>dnf_correction</name>
+  <version>0.1.0</version>
+  <description>DNF-based correction learning for robot action sequences</description>
+
+  <maintainer email="you@example.com">Your Name</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>rospy</depend>
+  <depend>std_msgs</depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+  <exec_depend>python3-matplotlib</exec_depend>
+</package>
