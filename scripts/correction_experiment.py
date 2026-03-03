@@ -162,18 +162,24 @@ class CorrectionExperiment:
 
         # ── spatial / temporal grid ───────────────────────────────────
         self.x_lim = 80
-        self.dx    = 0.05
-        self.dt    = 0.05
+        self.dx    = 0.2
+        self.dt    = 0.1
 
         self.x = np.arange(-self.x_lim, self.x_lim + self.dx, self.dx)
         self.t = np.arange(0, self.t_lim + self.dt, self.dt)
         self.t_feedback = np.arange(0, self.t_feedback_lim + self.dt, self.dt)
 
         # ── action layout ─────────────────────────────────────────────
-        self.input_positions = [-60, -30, 0, 30, 60]
-        self.action_names    = ["reach", "grasp", "lift", "transport", "place"]
+        # self.input_positions = [-60, -30, 0, 30, 60]
+        # self.action_names    = ["reach", "grasp", "lift", "transport", "place"]
+        # self.input_indices   = [np.argmin(np.abs(self.x - p)) for p in self.input_positions]
+        # self.action_buckets  = compute_action_bounds(self.x, self.input_positions)
+
+        self.all_positions   = [-60, -40, -20, 0, 20, 40, 60]
+        self.input_positions = [-60, -20, 20, 40]
+        self.action_names    = ["base", "load", "bearing", "motor"]
         self.input_indices   = [np.argmin(np.abs(self.x - p)) for p in self.input_positions]
-        self.action_buckets  = compute_action_bounds(self.x, self.input_positions)
+        self.action_buckets  = compute_action_bounds(self.x, self.all_positions)
 
         # ── main field params ─────────────────────────────────────────
         self.kernel_pars_act = [1.5, 0.8, 0.1]
