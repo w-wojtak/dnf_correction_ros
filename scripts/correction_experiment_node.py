@@ -25,15 +25,17 @@ class CorrectionExperimentNode:
         rospy.init_node('correction_experiment', anonymous=False)
 
         # ── load ROS params (set in launch file) ──────────────────────
-        data_path      = rospy.get_param('~data_path',      '../data')
+        data_path      = rospy.get_param('~data_path',      '../data_learning')
+        results_path   = rospy.get_param('~results_path',   '../data')
         n_iterations   = rospy.get_param('~n_iterations',   2)
         t_lim          = rospy.get_param('~t_lim',          30.0)
         t_feedback_lim = rospy.get_param('~t_feedback_lim', 30.0)
         trigger_step   = rospy.get_param('~trigger_step',   100)
 
         # ── core experiment (pure Python) ─────────────────────────────
-        self.exp  = CorrectionExperiment(
+        self.exp = CorrectionExperiment(
             data_path      = data_path,
+            results_path   = results_path,
             n_iterations   = n_iterations,
             t_lim          = t_lim,
             t_feedback_lim = t_feedback_lim,

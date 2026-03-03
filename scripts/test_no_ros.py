@@ -23,7 +23,8 @@ from correction_experiment import CorrectionExperiment, FeedbackType
 # -------- Config --------------------
 # ====================================
 
-DATA_PATH    = os.path.join(os.path.dirname(__file__), "..", "data")
+DATA_PATH    = os.path.join(os.path.dirname(__file__), "..", "data_learning")
+RESULTS_PATH = os.path.join(os.path.dirname(__file__), "..", "data")
 N_ITERATIONS = 2
 T_LIM        = 30.0
 T_FEEDBACK   = 30.0
@@ -44,6 +45,7 @@ ACTION_COLORS = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple"]
 def run():
     exp = CorrectionExperiment(
         data_path      = DATA_PATH,
+        results_path   = RESULTS_PATH,
         n_iterations   = N_ITERATIONS,
         t_lim          = T_LIM,
         t_feedback_lim = T_FEEDBACK,

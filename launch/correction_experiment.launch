@@ -1,6 +1,7 @@
 <launch>
   <!-- Experiment parameters -->
-  <param name="data_path"         value="$(find dnf_correction)/data" />
+  <param name="data_path"         value="$(find dnf_correction)/data_learning" />
+  <param name="results_path" value="$(find dnf_correction)/data" />
   <param name="n_iterations"      value="2" />
   <param name="t_lim"             value="30.0" />
   <param name="t_feedback_lim"    value="30.0" />

@@ -5,6 +5,7 @@ __pycache__/
 
 # Numpy data
 data/*.npy
+data_learning/*.npy
 
 # ROS build
 build/

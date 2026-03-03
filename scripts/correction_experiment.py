@@ -149,11 +149,12 @@ class CorrectionExperiment:
     ROS node wraps this class and calls its methods via timer callbacks.
     """
 
-    def __init__(self, data_path, n_iterations=2, t_lim=30.0,
+    def __init__(self, data_path, results_path, n_iterations=2, t_lim=30.0,
                  t_feedback_lim=30.0, trigger_step=100):
 
         # ── experiment params ─────────────────────────────────────────
         self.data_path       = data_path
+        self.results_path = results_path
         self.n_iterations    = n_iterations
         self.t_lim           = t_lim
         self.t_feedback_lim  = t_feedback_lim
@@ -270,16 +271,16 @@ class CorrectionExperiment:
             u_act_memory       = np.zeros(len(self.x))
             return u_act_memory, h_d_initial, input_action_onset
 
-    def save_memory(self):
-        """Save updated u_act_memory and h_amem_mask to data_path."""
-        timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
-        memory_path = os.path.join(self.data_path,
-                                   f"u_act_memory_iter{self.iteration}_{timestamp}.npy")
-        mask_path   = os.path.join(self.data_path,
-                                   f"h_amem_mask_iter{self.iteration}_{timestamp}.npy")
-        np.save(memory_path, self.u_act_memory)
-        np.save(mask_path,   self.h_amem_mask)
-        print(f"[CorrectionExperiment] Memory saved: {memory_path}")
+    # def save_memory(self):
+    #     """Save updated u_act_memory and h_amem_mask to data_path."""
+    #     timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
+    #     memory_path = os.path.join(self.data_path,
+    #                                f"u_act_memory_iter{self.iteration}_{timestamp}.npy")
+    #     mask_path   = os.path.join(self.data_path,
+    #                                f"h_amem_mask_iter{self.iteration}_{timestamp}.npy")
+    #     np.save(memory_path, self.u_act_memory)
+    #     np.save(mask_path,   self.h_amem_mask)
+    #     print(f"[CorrectionExperiment] Memory saved: {memory_path}")
 
     # ====================================
     # -------- Iteration reset -----------
@@ -399,6 +400,19 @@ class CorrectionExperiment:
             print(f"  [{target_name} {feedback_type.value}] triggered at step {self.feedback_step_i}")
             ff.inject_add(center=target_center, amplitude=3.0, width=5.0)
 
+
+
+    def save_memory(self):
+        """Save updated u_act_memory and h_amem_mask to results_path."""
+        timestamp   = datetime.now().strftime("%Y%m%d_%H%M%S")
+        memory_path = os.path.join(self.results_path,
+                                f"u_act_memory_iter{self.iteration}_{timestamp}.npy")
+        mask_path   = os.path.join(self.results_path,
+                                f"h_amem_mask_iter{self.iteration}_{timestamp}.npy")
+        np.save(memory_path, self.u_act_memory)
+        np.save(mask_path,   self.h_amem_mask)
+        print(f"[CorrectionExperiment] Saved to: {memory_path}")
+        
     # ====================================
     # -------- Apply correction ----------
     # ====================================
