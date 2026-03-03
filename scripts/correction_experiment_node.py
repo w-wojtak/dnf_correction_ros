@@ -56,6 +56,9 @@ class CorrectionExperimentNode:
         # human feedback string, e.g. "skip grasp" or "swap grasp lift"
         self.sub_feedback = rospy.Subscriber(
             'human_feedback', String, self._feedback_callback, queue_size=1)
+        
+
+        self.pub_gripper = rospy.Publisher('/gripper/command', String, queue_size=10)
 
         # ── execution timer (starts first iteration immediately) ──────
         self.exec_timer     = None
@@ -78,12 +81,11 @@ class CorrectionExperimentNode:
 
     def _execution_callback(self, event):
         with self._lock:
-            result = self.exp.execution_step()
+            result, crossed_action = self.exp.execution_step()
 
         if result is None:
-            # Loop 1 complete
             self.exec_timer.shutdown()
-            rospy.loginfo("[CorrectionExperimentNode] Execution complete. Waiting for feedback...")
+            rospy.loginfo("[CorrectionExperimentNode] Execution complete.")
             self.pub_exec.publish(Bool(data=True))
             self._start_feedback_window()
         else:
@@ -91,6 +93,13 @@ class CorrectionExperimentNode:
             msg      = Float32MultiArray()
             msg.data = result
             self.pub_field.publish(msg)
+
+            # publish gripper command if threshold crossed
+            if crossed_action is not None:
+                gripper_msg      = String()
+                gripper_msg.data = crossed_action
+                self.pub_gripper.publish(gripper_msg)
+                rospy.loginfo(f"[CorrectionExperimentNode] Gripper command: {crossed_action}")
 
     # ====================================
     # -------- Feedback phase ------------

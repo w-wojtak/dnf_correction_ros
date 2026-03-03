@@ -188,6 +188,8 @@ class CorrectionExperiment:
         self.w_hat_act = np.fft.fft(kernel_act)
         self.w_hat_wm  = np.fft.fft(kernel_wm)
 
+        self.threshold_crossed = {pos: False for pos in self.input_positions}
+
         # ── feedback field setup ──────────────────────────────────────
         self.input_duration = 50
 
@@ -301,6 +303,8 @@ class CorrectionExperiment:
         self.h_u_act = -self.h_d_initial * np.ones(len(self.x)) + 1.5
         self.h_u_wm  = self.h_0_wm * np.ones(len(self.x))
 
+        self.threshold_crossed = {pos: False for pos in self.input_positions}
+
         # reset feedback fields
         for ff in self.feedback_fields.values():
             ff.reset()
@@ -324,7 +328,7 @@ class CorrectionExperiment:
         Call repeatedly until returns None (execution complete).
         """
         if self.exec_step >= len(self.t):
-            return None  # signal: execution complete
+            return None, None  # signal: execution complete
 
         conv_act = compute_convolution(self.u_act, self.theta_act,
                                        self.w_hat_act, self.dx)
@@ -345,8 +349,17 @@ class CorrectionExperiment:
 
         self.exec_step += 1
 
+        # check threshold crossings
+        crossed_action = None
+        for i, idx in enumerate(self.input_indices):
+            pos = self.input_positions[i]
+            if not self.threshold_crossed[pos] and self.u_act[idx] > self.theta_act:
+                self.threshold_crossed[pos] = True
+                crossed_action = self.action_names[i]
+                print(f"[CorrectionExperiment] Threshold crossed: {crossed_action}")
+
         # return current field values at action positions for publishing
-        return [self.u_act[idx] for idx in self.input_indices]
+        return [self.u_act[idx] for idx in self.input_indices], crossed_action
 
     # ====================================
     # -------- Feedback step -------------

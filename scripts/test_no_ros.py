@@ -34,6 +34,8 @@ TRIGGER_STEP = 100
 # format: (FeedbackType, action_name)           — SKIP, LOCK, EARLY, LATE
 # format: (FeedbackType, action_name, target)   — SWAP
 HUMAN_FEEDBACK = (FeedbackType.SKIP, "grasp")
+# HUMAN_FEEDBACK = (FeedbackType.LOCK, "grasp")
+# HUMAN_FEEDBACK = (FeedbackType.SWAP, "grasp", "lift")
 
 ACTION_COLORS = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple"]
 
@@ -59,10 +61,12 @@ def run():
         u_act_memory_before = exp.u_act_memory.copy()
 
         while True:
-            result = exp.execution_step()
+            result, crossed_action = exp.execution_step()
             if result is None:
                 print("Loop 1 complete.")
                 break
+            if crossed_action is not None:
+                print(f"  → threshold crossed: {crossed_action}")
 
         # ── Loop 2: Feedback window ───────────────────────────────────
         exp.set_feedback(HUMAN_FEEDBACK)
